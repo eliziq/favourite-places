@@ -1,22 +1,33 @@
-import { FlatList, View, Text, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { FlatList, View, Text, StyleSheet, Image } from "react-native";
+import { GlobalStyles } from "../../constants/styles";
 import PlaceItem from "./PlaceItem";
 
 const PlacesList = ({ places }) => {
+  const navigation = useNavigation();
+  const selectPlaceHandler = (id) => {
+    navigation.navigate("Place Details", { placeId: id });
+  };
   if (!places || places.length === 0) {
     return (
       <View style={styles.fallbackContainer}>
         <Text style={styles.fallbackText}>
-          No places added yet - start adding some right now!
+          No places added yet. Start adding some right now!
         </Text>
       </View>
     );
   }
   return (
-    <FlatList
-      data={places}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <PlaceItem place={item} />}
-    />
+    <View>
+      <FlatList
+        style={styles.list}
+        data={places}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <PlaceItem place={item} onSelect={selectPlaceHandler} />
+        )}
+      />
+    </View>
   );
 };
 
@@ -27,8 +38,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    padding: 24,
   },
   fallbackText: {
-    fontSize: 16,
+    fontSize: 24,
+    fontFamily: "unbounded-500",
+    lineHeight: 36,
+    color: GlobalStyles.colors.black,
+  },
+  list: {
+    margin: 12,
   },
 });
